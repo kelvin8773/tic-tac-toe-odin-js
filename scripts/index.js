@@ -1,23 +1,24 @@
 let Gameboard = {
-    position0: '',
-    position1: '',
-    position2: '',
-    position3: 'X',
-    position4: '',
-    position5: 'O',
-    position6: '',
-    position7: '',
-    position8: '',
+    '0': '',
+    '1': '',
+    '2': '',
+    '3': '',
+    '4': '',
+    '5': '',
+    '6': '',
+    '7': '',
+    '8': '',
 }
 
 function render_board(Gameboard) {
-    let board = document.getElementById('gameboard');
-    
-    for (let key in Gameboard) {
-     console.log(Gameboard[key]);
-    }
-    console.log(board);
+    let cells = document.getElementsByClassName('cell');
 
+    for (let key in Gameboard) {
+        let i = parseInt(key);
+        cells[i].innerText = Gameboard[key];
+    }
+    
 }
+
 
 render_board(Gameboard)
