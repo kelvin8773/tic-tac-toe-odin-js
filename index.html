@@ -32,12 +32,28 @@
                 </tr>
             </table>
             <div class="m-5">
-                <button class="btn btn-primary btn-lg mx-3">
-                    Restart
-                </button>
-                <button class="btn btn-danger btn-lg mx-3">
-                    Exit
-                </button>
+                <h4 class="text-center" id="message-line">
+                    Please Giving Players Name to Start ...
+                </h4>
+                <form id='player-form' class='my-3'>
+                    <div class="form-group">
+                        <label>Player1: </label>
+                        <input type="text" name="player1" placeholder="Input Name here">
+        
+                        <label>Player2: </label>
+                        <input type="text" name="player2" placeholder="Input Name here">
+                    </div>
+
+                    <div class='form-group'>
+                        <button id='startbtn' class="btn btn-primary btn-lg mx-3">
+                            Start
+                        </button>
+        
+                        <button id='restbtn' class="btn btn-danger btn-lg mx-3">
+                            Reset
+                        </button>
+                    </div>
+               </form> 
             </div>
         </div>
 
