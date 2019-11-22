@@ -1,124 +1,156 @@
 const DataModule = (() => {
 
-  const Player = (name, symbol) => {
-    this._name = name;
-    this._symbol = symbol;
+    const Player = (name, symbol) => {
+        this._name = name;
+        this._symbol = symbol;
 
-    const getName = () => {return this._name};
-    const getSymbol = () => {return this._symbol};
+        const getName = () => { return this._name };
+        const getSymbol = () => { return this._symbol };
 
-    return {getName, getSymbol}
-  };
+        return { getName, getSymbol }
+    };
 
-  const Board = () => {
-    const grid = new Array(9).fill(null);
-    const winCombs = [
-      [0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 4, 8],
-      [0, 3, 6], [1, 4, 7], [2, 5, 8], [2, 4, 6]
-    ];
+    const Board = () => {
+        const grid = new Array(9).fill(null);
+        const winCombs = [
+            [0, 1, 2],
+            [3, 4, 5],
+            [6, 7, 8],
+            [0, 4, 8],
+            [0, 3, 6],
+            [1, 4, 7],
+            [2, 5, 8],
+            [2, 4, 6]
+        ];
 
-    const markSymbol = (player, pos) => {
-      const symbol = player.getSymbol();
+        const markSymbol = (player, pos) => {
+            const symbol = player.getSymbol();
 
-      if (grid[pos] != null) {
-        grid[pos] = symbol;
-        return true;
-      } else {
-        return false;
-      }
-    }
-
-    const isWon = (player) => {
-      const symbol = player.getSymbol();
-      const playerPosistions = grid.reduce( (arr, value, index) => {
-        if (value == symbol) {
-          arr.push(index); 
+            if (grid[pos] != null) {
+                grid[pos] = symbol;
+                return true;
+            } else {
+                return false;
+            }
         }
-        return arr;
-      }, [] );
 
-      const check = (arr) => { playerPosistions.some(r => arr.includes(r))};
+        const isWon = (player) => {
+            const symbol = player.getSymbol();
+            const playerPosistions = grid.reduce((arr, value, index) => {
+                if (value == symbol) {
+                    arr.push(index);
+                }
+                return arr;
+            }, []);
 
-      return winCombs.forEach(arr => check(arr)); 
+            const check = (arr) => { playerPosistions.some(r => arr.includes(r)) };
+
+            return winCombs.forEach(arr => check(arr));
+
+        };
+
+        const getWinCombos = () => {
+            for (let combo of winCombs) {
+
+            }
+        }
+
+        const isFull = () => !grid.some(pos => pos == null);
+
+        const reset = () => {
+            grid.forEach(cell => cell = null);
+        }
+
+        return { reset, isWon, markSymbol }
 
     };
 
-    const reset = () => {
-      grid.forEach(cell => cell = null );
-    }
+    const Game = (board, ...players) => {
+        const switchPlayer = () => players.reverse();
+        const activePlayer = () => players[0];
 
-    return {reset, isWon, markSymbol}
+        const isGameOver = () => {
+            // if (board.isWon(activePlayer())) {
+            return board.isWon(activePlayer().getSymbol()) || board.isFull();
+            // } else if (!board.isWon(activePlayer()) && board.isFull()) {
+            //     console.log("it is a draw");
+            // }
+        };
 
-  };
+        const getWinner = () => {
+            return board.isWon(game.activePlayer().getSymbol()) && players[0];
+        }
+    };
 
-  const Game = () => {
-
-  };
-
-  return {Player, Board, Game}
+    return { Player, Board, Game }
 })();
 
 
 const UIModule = (() => {
-  const DOMSelectors = {
-    startbutton: '#startbtn',
-    restbutton: '#restbtn',
-    board: '#gameboard',
-    allcells: '.cell',
-    message: '#message-line',
-    player1Name: `[name=player1]`,
-    player2Name: `[name=player2]`,
-    cell(pos) { return `#"${pos}"`}
-  }
+    const DOMSelectors = {
+        startbutton: '#startbtn',
+        restbutton: '#restbtn',
+        board: '#gameboard',
+        allcells: '.cell',
+        message: '#message-line',
+        player1Name: `[name=player1]`,
+        player2Name: `[name=player2]`,
+        cell(pos) { return `#"${pos}"` }
+    }
 
-  return { DOMSelectors, }
+    const getDOMSelectors = () => DOMSelectors;
+    const markPosition = ({ position, symbol }) => {
+        const cell = document.querySelector(DOMSelectors.cell(position));
+
+    }
+    return { DOMSelectors, }
 
 })();
 
 
-const Controller = ((Data, UI)=> {
-  let DOM = UI.DOMSelectors;
+const Controller = ((Data, UI) => {
+    let DOM = UI.DOMSelectors;
 
-  let board = Data.Board;
-  let game = Data.Game;
+    let board = Data.Board;
+    let game = Data.Game;
 
 
-  const restGame = () => {
-    board.rest();
-    game.rest();
-    UI.clearBoard();
-  };
+    const restGame = () => {
+        board.rest();
+        game.rest();
+        UI.clearBoard();
+    };
 
-  const runGame = (board, player1, player2) => {
+    const runGame = (board, player1, player2) => {
 
-    if (board.isWon(player1)) {
-      
+        if (board.isWon(player1)) {
+
+        }
+
     }
 
-  }
+    const startGame = () => {
+        const player1Name = document.querySelector(DOM.player1Name).value;
+        const player2Name = document.querySelector(DOM.player2Name).value;
 
-  const startGame = () => {
-    const player1Name = document.querySelector(DOM.player1Name).value;
-    const player2Name = document.querySelector(DOM.player2Name).value;
+        const player1 = Data.Player(player1Name, 'X');
+        const player2 = Data.Player(player2Name, 'O');
 
-    const player1 = Data.Player(player1Name, 'X');
-    const player2 = Data.Player(player2Name, 'O');
+        const messageNode = document.createTextNode(`Player1 is ${player1Name}, Player2 is ${player2Name}`);
+        document.querySelector(DOM.message).replaceWith(messageNode);
 
-    const messageNode = document.createTextNode(`Player1 is ${player1Name}, Player2 is ${player2Name}`);
-    document.querySelector(DOM.message).replaceWith(messageNode);
-    
-    restGame();
-    runGame(board, player1, player2);
+        restGame();
+        runGame(board, player1, player2);
 
-  };
+    };
 
-  
-  const init = () => {
-    document.querySelector(DOM.startbutton)
-      .addEventListener('click', startGame);
-  };
 
-  return { init }
+    const init = () => {
+        document.querySelector(DOM.startbutton)
+            .addEventListener('click', startGame);
+    };
+
+    return { init }
 })(DataModule, UIModule);
 
 Controller.init();
