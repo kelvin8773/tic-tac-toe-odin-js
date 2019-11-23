@@ -115,14 +115,18 @@ const UIModule = (() => {
     const showResult = (player = null) => {
       const messageNode = document.querySelector(DOMSelectors.message);
 
-      
+      if (player) {
+        messageNode.innerText = `${player.getName()} has won! Congratulation!`;
+      } else {
+        messageNode.innerText = 'The Board is full, please rest and try again!'
+      }
 
     }
 
     const showWinCombo = (combo) => {
       combo.forEach( (index) => {
         const cell = document.querySelector(DOMSelectors.cell(index));
-        cell.style.background = '#e67e25';
+        cell.style.background = '#32a852';
       })
     }
 
@@ -132,10 +136,9 @@ const UIModule = (() => {
       for (let cell of cells) {
         cell.innerText = "";
       }
-    }
+    };
 
-
-    return { getDOMSelectors, markPosition, showResult, showWinCombo, clearBoard }
+    return {getDOMSelectors, markPosition, showResult, showWinCombo, clearBoard}
 
 })();
 
