@@ -82,7 +82,6 @@ const DataModule = (() => {
            board.markSymbol(pos, symbol);
            return {pos, symbol};
         }
-
         return { switchPlayer, activePlayer, isGameOver, getWinner, getWinCombo, turn }
     };
 
@@ -103,11 +102,40 @@ const UIModule = (() => {
     }
 
     const getDOMSelectors = () => DOMSelectors;
+
     const markPosition = ({ position, symbol }) => {
         const cell = document.querySelector(DOMSelectors.cell(position));
+        drawSymbol(cell, symbol)
+    }
+
+    const drawSymbol = (cell, symbol) =>{
+      cell.innerText = symbol;
+    }
+
+    const showResult = (player = null) => {
+      const messageNode = document.querySelector(DOMSelectors.message);
+
+      
 
     }
-    return { DOMSelectors, }
+
+    const showWinCombo = (combo) => {
+      combo.forEach( (index) => {
+        const cell = document.querySelector(DOMSelectors.cell(index));
+        cell.style.background = '#e67e25';
+      })
+    }
+
+    const clearBoard = () => {
+      const cells = document.getElementsByClassName(DOMSelectors.allcells);
+
+      for (let cell of cells) {
+        cell.innerText = "";
+      }
+    }
+
+
+    return { getDOMSelectors, markPosition, showResult, showWinCombo, clearBoard }
 
 })();
 
