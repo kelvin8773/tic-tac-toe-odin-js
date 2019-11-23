@@ -1,18 +1,15 @@
 const DataModule = (() => {
 
     const Player = (name, symbol) => {
-        this._name = name;
-        this._symbol = symbol;
-
-        const getName = () => { return this._name };
-        const getSymbol = () => { return this._symbol };
+        const getName = () => name;
+        const getSymbol = () => symbol;
 
         return { getName, getSymbol }
     };
 
     const Board = () => {
         const grid = new Array(9).fill(null);
-        const winCombs = [
+        const winCombos = [
             [0, 1, 2],
             [3, 4, 5],
             [6, 7, 8],
@@ -23,45 +20,44 @@ const DataModule = (() => {
             [2, 4, 6]
         ];
 
-        const markSymbol = (player, pos) => {
-            const symbol = player.getSymbol();
-
-            if (grid[pos] != null) {
-                grid[pos] = symbol;
-                return true;
-            } else {
-                return false;
+        const markSymbol = (symbol, position) => {
+            if (grid[position] == null) {
+                grid[position] = symbol;
             }
         }
 
-        const isWon = (player) => {
-            const symbol = player.getSymbol();
-            const playerPosistions = grid.reduce((arr, value, index) => {
-                if (value == symbol) {
-                    arr.push(index);
-                }
-                return arr;
-            }, []);
+        const getPositionsBySymbol = (symbol) => {
+          const  positions = [];
+          grid.forEach((value, index) => {
+            if (value === symbol) {
+              getPositionsBySymbol.push(index);
+            }
+          })
+          return positions;
+        }
 
-            const check = (arr) => { playerPosistions.some(r => arr.includes(r)) };
+        const getWinCombo = (symbol) => {
+          const positions = getPositionsBySymbol(symbol);
+          for (let combo of winCombos) {
+            if (combo.every(c => positions.includes(c))) {
+              return combo;
+            }
+          }
+        }
 
-            return winCombs.forEach(arr => check(arr));
-
+        const isWon = (symbol) => {
+          if (getWinCombo(symbol)) {
+            return true;
+          } else {
+            return false;
+          }
         };
-
-        const getWinCombos = () => {
-            for (let combo of winCombs) {
-
-            }
-        }
 
         const isFull = () => !grid.some(pos => pos == null);
 
-        const reset = () => {
-            grid.forEach(cell => cell = null);
-        }
+        const isEmptyCell = (pos) => !grid[pos];
 
-        return { reset, isWon, markSymbol }
+      return {markSymbol, getWinCombo, isFull, isWon, isEmptyCell}
 
     };
 
