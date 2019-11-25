@@ -1,12 +1,8 @@
 const DataModule = (() => {
 
     const Player = (name, symbol) => {
-        this._name = name;
-        this._symbol = symbol;
-
-        const getName = () => { return this._name };
-        const getSymbol = () => { return this._symbol };
-
+        const getName = () => name;
+        const getSymbol = () => symbol;
         return { getName, getSymbol }
     };
 
@@ -23,46 +19,40 @@ const DataModule = (() => {
             [2, 4, 6]
         ];
 
-        const markSymbol = (player, pos) => {
-            const symbol = player.getSymbol();
-
-            if (grid[pos] != null) {
-                grid[pos] = symbol;
-                return true;
-            } else {
-                return false;
-            }
+        const mark = (pos, symbol) => {
+          grid[pos] = symbol;
         }
 
-        const isWon = (player) => {
-            const symbol = player.getSymbol();
-            const playerPosistions = grid.reduce((arr, value, index) => {
-                if (value == symbol) {
-                    arr.push(index);
-                }
-                return arr;
-            }, []);
+        const positionsBySymbol = (symbol) => {
+          const positions = [];
+          grid.forEach((value, pos) => {
+            if (value === symbol) {
+              positions.push(pos)
+            }
+          })
+        }
 
-            const check = (arr) => { playerPosistions.some(r => arr.includes(r)) };
-
-            return winCombs.forEach(arr => check(arr));
-
+        const isWon = (symbol) => {
+            if (getWinCombo(symbol)) {
+              return true
+            }
+            return false
         };
 
-        const getWinCombos = () => {
+        const getWinCombo = (symbol) => {
+          const positions = positionsBySymbol(symbol);
             for (let combo of winCombs) {
-
+              if (combo.every(c => positions.includes(c))) {
+                return combo;
+              }
             }
         }
 
         const isFull = () => !grid.some(pos => pos == null);
 
-        const reset = () => {
-            grid.forEach(cell => cell = null);
-        }
+        const isEmptyCell = (pos) => !grid[pos]; 
 
-        return { reset, isWon, markSymbol }
-
+      return { mark, getWinCombo, isFull, isWon, isEmptyCell }
     };
 
     const Game = (board, ...players) => {
