@@ -46,13 +46,13 @@ const DataModule = (() => {
         }
       }
     };
+    
+    const isFull = () => !grid.some(pos => pos === null);
 
-    return { markSymbol, getWinCombo, isFull, isWon, isEmptyCell };
-  };
-
-  const isEmptyCell = pos => !grid[pos];
+    const isEmptyCell = pos => !grid[pos];
 
   return { mark, getWinCombo, isFull, isWon, isEmptyCell };
+  };
 
   const Game = (board, ...players) => {
     const switchPlayer = () => players.reverse();
@@ -154,6 +154,10 @@ const UIModule = (() => {
 })();
 
 const Controller = ((Data, UI) => {
+  const DOM = UI.getDOMSelectors();
+
+  const startGame = () => {};
+
   const init = () => {
     document
       .querySelector(DOM.startbutton)
