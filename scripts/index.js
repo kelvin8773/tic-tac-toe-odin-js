@@ -46,12 +46,12 @@ const DataModule = (() => {
         }
       }
     };
-    
+
     const isFull = () => !grid.some(pos => pos === null);
 
     const isEmptyCell = pos => !grid[pos];
 
-  return { mark, getWinCombo, isFull, isWon, isEmptyCell };
+    return { mark, getWinCombo, isFull, isWon, isEmptyCell };
   };
 
   const Game = (board, ...players) => {
