@@ -2,13 +2,12 @@ const DataModule = (() => {
   const Player = (name, symbol) => {
     const getName = () => name;
     const getSymbol = () => symbol;
-
     return { getName, getSymbol };
   };
 
   const Board = () => {
     const grid = new Array(9).fill(null);
-    const winCombos = [
+    const winCombs = [
       [0, 1, 2],
       [3, 4, 5],
       [6, 7, 8],
@@ -19,74 +18,72 @@ const DataModule = (() => {
       [2, 4, 6]
     ];
 
-    const markSymbol = (symbol, position) => {
-      if (grid[position] == null) {
-        grid[position] = symbol;
-      }
+    const mark = (pos, symbol) => {
+      grid[pos] = symbol;
     };
 
-    const getPositionsBySymbol = symbol => {
+    const positionsBySymbol = symbol => {
       const positions = [];
-      grid.forEach((value, index) => {
+      grid.forEach((value, pos) => {
         if (value === symbol) {
-          getPositionsBySymbol.push(index);
+          positions.push(pos);
         }
       });
-      return positions;
+    };
+
+    const isWon = symbol => {
+      if (getWinCombo(symbol)) {
+        return true;
+      }
+      return false;
     };
 
     const getWinCombo = symbol => {
-      const positions = getPositionsBySymbol(symbol);
-      for (let combo of winCombos) {
+      const positions = positionsBySymbol(symbol);
+      for (let combo of winCombs) {
         if (combo.every(c => positions.includes(c))) {
           return combo;
         }
       }
     };
 
-    const isWon = symbol => {
-      if (getWinCombo(symbol)) {
-        return true;
-      } else {
-        return false;
-      }
-    };
-
-    const isFull = () => !grid.some(pos => pos == null);
-
-    const isEmptyCell = pos => !grid[pos];
-
     return { markSymbol, getWinCombo, isFull, isWon, isEmptyCell };
   };
 
+  const isEmptyCell = pos => !grid[pos];
+
+  return { mark, getWinCombo, isFull, isWon, isEmptyCell };
+
   const Game = (board, ...players) => {
     const switchPlayer = () => players.reverse();
-    const activePlayer = () => players[0];
+    const getActivePlayer = () => players[0];
 
     const isGameOver = () => {
-      return board.isWon(activePlayer().getSymbol()) || board.isFull();
+      return board.isWon(getActivePlayer().getSymbol()) || board.isFull();
     };
 
     const getWinner = () => {
-      return board.isWon(activePlayer().getSymbol()) && players[0];
+      return board.isWon(getActivePlayer().getSymbol()) && players[0];
     };
 
-    const getWinCombo = () => board.getWinCombo(getWinner().getSymbol());
+    const getWinCombo = () => board.getWinCombo(getActivePlayer().getSymbol());
 
     const turn = pos => {
       if (!board.isEmptyCell(pos)) return;
-      const symbol = activePlayer().getSymbol();
+      const symbol = getActivePlayer().getSymbol();
 
-      board.markSymbol(pos, symbol);
+      board.mark(pos, symbol);
+
       return { pos, symbol };
     };
+
     return {
       switchPlayer,
-      activePlayer,
+      getActivePlayer,
       isGameOver,
       getWinner,
-      getWinCombo,
-      turn
+      turn,
+      getWinCombo
     };
   };
 
@@ -100,6 +97,7 @@ const UIModule = (() => {
     board: "#gameboard",
     allcells: ".cell",
     message: "#message-line",
+    result: ".result",
     player1Name: `[name=player1]`,
     player2Name: `[name=player2]`,
     cell(pos) {
@@ -108,82 +106,54 @@ const UIModule = (() => {
   };
 
   const getDOMSelectors = () => DOMSelectors;
-
   const markPosition = ({ position, symbol }) => {
     const cell = document.querySelector(DOMSelectors.cell(position));
     drawSymbol(cell, symbol);
+  };
+
+  const result = (player = null) => {
+    const resultNode = document.querySelector(DOMSelectors.result);
+    if (player) {
+      resultNode.innerHTML = `
+            <p style="color: ${player.getSymbol() == "x" ? "blue" : "yellow"}>
+              ${player.getName()} has won!
+              </p>
+            `;
+    }
   };
 
   const drawSymbol = (cell, symbol) => {
     cell.innerText = symbol;
   };
 
-  const showResult = (player = null) => {
-    const messageNode = document.querySelector(DOMSelectors.message);
-
-    if (player) {
-      messageNode.innerText = `${player.getName()} has won! Congratulation!`;
-    } else {
-      messageNode.innerText = "The Board is full, please rest and try again!";
+  const showWinCombo = combo => {
+    for (let c of combo) {
+      const el = document.querySelector(DOMSelectors.cell(c));
+      el.style.background = "green";
     }
   };
 
-  const showWinCombo = combo => {
-    combo.forEach(index => {
-      const cell = document.querySelector(DOMSelectors.cell(index));
-      cell.style.background = "#32a852";
-    });
-  };
-
   const clearBoard = () => {
-    const cells = document.getElementsByClassName(DOMSelectors.allcells);
+    const cells = document.querySelectorAll(DOMSelectors.allcells);
 
-    for (let cell of cells) {
-      cell.innerText = "";
+    for (let c of cells) {
+      c.innerText = "";
+      c.style.background = "white";
     }
   };
 
   return {
+    DOMSelectors,
     getDOMSelectors,
     markPosition,
-    showResult,
+    drawSymbol,
     showWinCombo,
+    result,
     clearBoard
   };
 })();
 
 const Controller = ((Data, UI) => {
-  let DOM = UI.DOMSelectors;
-
-  let board = Data.Board;
-  let game = Data.Game;
-
-  const restGame = () => {
-    board.rest();
-    game.rest();
-    UI.clearBoard();
-  };
-
-  const runGame = (board, player1, player2) => {
-    
-  };
-
-  const startGame = () => {
-    const player1Name = document.querySelector(DOM.player1Name).value;
-    const player2Name = document.querySelector(DOM.player2Name).value;
-
-    const player1 = Data.Player(player1Name, "X");
-    const player2 = Data.Player(player2Name, "O");
-
-    const messageNode = document.createTextNode(
-      `Player1 is ${player1Name}, Player2 is ${player2Name}`
-    );
-    document.querySelector(DOM.message).replaceWith(messageNode);
-
-    restGame();
-    runGame(board, player1, player2);
-  };
-
   const init = () => {
     document
       .querySelector(DOM.startbutton)
