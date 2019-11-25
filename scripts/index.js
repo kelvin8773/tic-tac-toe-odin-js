@@ -20,39 +20,39 @@ const DataModule = (() => {
         ];
 
         const mark = (pos, symbol) => {
-          grid[pos] = symbol;
+            grid[pos] = symbol;
         }
 
         const positionsBySymbol = (symbol) => {
-          const positions = [];
-          grid.forEach((value, pos) => {
-            if (value === symbol) {
-              positions.push(pos)
-            }
-          })
+            const positions = [];
+            grid.forEach((value, pos) => {
+                if (value === symbol) {
+                    positions.push(pos)
+                }
+            })
         }
 
         const isWon = (symbol) => {
             if (getWinCombo(symbol)) {
-              return true
+                return true
             }
             return false
         };
 
         const getWinCombo = (symbol) => {
-          const positions = positionsBySymbol(symbol);
+            const positions = positionsBySymbol(symbol);
             for (let combo of winCombs) {
-              if (combo.every(c => positions.includes(c))) {
-                return combo;
-              }
+                if (combo.every(c => positions.includes(c))) {
+                    return combo;
+                }
             }
         }
 
         const isFull = () => !grid.some(pos => pos == null);
 
-        const isEmptyCell = (pos) => !grid[pos]; 
+        const isEmptyCell = (pos) => !grid[pos];
 
-      return { mark, getWinCombo, isFull, isWon, isEmptyCell }
+        return { mark, getWinCombo, isFull, isWon, isEmptyCell }
     };
 
     const Game = (board, ...players) => {
@@ -70,14 +70,14 @@ const DataModule = (() => {
         const getWinCombo = () => board.getWinCombo(getActivePlayer().getSymbol());
 
         const turn = (pos) => {
-          if (!board.isEmptyCell(pos)) return;
-          const symbol = getActivePlayer().getSymbol();
+            if (!board.isEmptyCell(pos)) return;
+            const symbol = getActivePlayer().getSymbol();
 
-          board.mark(pos, symbol);
+            board.mark(pos, symbol);
 
-          return {pos, symbol};
+            return { pos, symbol };
         }
- 
+
         return { switchPlayer, getActivePlayer, isGameOver, getWinner, turn, getWinCombo }
     };
 
@@ -92,6 +92,7 @@ const UIModule = (() => {
         board: '#gameboard',
         allcells: '.cell',
         message: '#message-line',
+        result: '.result',
         player1Name: `[name=player1]`,
         player2Name: `[name=player2]`,
         cell(pos) { return `#"${pos}"` }
@@ -100,9 +101,41 @@ const UIModule = (() => {
     const getDOMSelectors = () => DOMSelectors;
     const markPosition = ({ position, symbol }) => {
         const cell = document.querySelector(DOMSelectors.cell(position));
-
+        drawSymbol(cell, symbol);
     }
-    return { DOMSelectors, }
+
+    const result = (player = null) => {
+        const resultNode = document.querySelector(DOMSelectors.result);
+        if (player) {
+            resultNode.innerHTML = `
+            <p style="color: ${player.getSymbol() == 'x' ? 'blue' : 'yellow' }>
+              ${player.getName()} has won!
+              </p>
+            `
+        }
+    }
+
+    const drawSymbol = (cell, symbol) => {
+        cell.innerText = symbol;
+    }
+
+    const showWinCombo = (combo) => {
+        for (let c of combo) {
+            const el = document.querySelector(DOMSelectors.cell(c));
+            el.style.background = 'green';
+        };
+    }
+
+    const clearBoard = () => {
+        const cells = document.querySelectorAll(DOMSelectors.allcells);
+
+        for (let c of cells) {
+            c.innerText = '';
+            c.style.background = 'white';
+        }
+    }
+
+    return { DOMSelectors, getDOMSelectors, markPosition, drawSymbol, showWinCombo, result, clearBoard };
 
 })();
 
