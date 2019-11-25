@@ -15,7 +15,7 @@ const DataModule = (() => {
       [0, 3, 6],
       [1, 4, 7],
       [2, 5, 8],
-      [2, 4, 6]
+      [2, 4, 6],
     ];
 
     const mark = (pos, symbol) => {
@@ -31,14 +31,14 @@ const DataModule = (() => {
       });
     };
 
-    const isWon = symbol => {
+    const isWon = (symbol) => {
       if (getWinCombo(symbol)) {
         return true;
       }
       return false;
     };
 
-    const getWinCombo = symbol => {
+    const getWinCombo = (symbol) => {
       const positions = positionsBySymbol(symbol);
       for (let combo of winCombs) {
         if (combo.every(c => positions.includes(c))) {
@@ -51,7 +51,13 @@ const DataModule = (() => {
 
     const isEmptyCell = pos => !grid[pos];
 
-    return { mark, getWinCombo, isFull, isWon, isEmptyCell };
+    return { 
+        mark,
+        getWinCombo,
+        isFull,
+        isWon,
+        isEmptyCell,
+    };
   };
 
   const Game = (board, ...players) => {
@@ -68,7 +74,7 @@ const DataModule = (() => {
 
     const getWinCombo = () => board.getWinCombo(getActivePlayer().getSymbol());
 
-    const turn = pos => {
+    const turn = (pos) => {
       if (!board.isEmptyCell(pos)) return;
       const symbol = getActivePlayer().getSymbol();
 
@@ -83,7 +89,7 @@ const DataModule = (() => {
       isGameOver,
       getWinner,
       turn,
-      getWinCombo
+      getWinCombo,
     };
   };
 
@@ -102,7 +108,7 @@ const UIModule = (() => {
     player2Name: `[name=player2]`,
     cell(pos) {
       return `#"${pos}"`;
-    }
+    },
   };
 
   const getDOMSelectors = () => DOMSelectors;
@@ -126,7 +132,7 @@ const UIModule = (() => {
     cell.innerText = symbol;
   };
 
-  const showWinCombo = combo => {
+  const showWinCombo = (combo) => {
     for (let c of combo) {
       const el = document.querySelector(DOMSelectors.cell(c));
       el.style.background = "green";
@@ -149,14 +155,14 @@ const UIModule = (() => {
     drawSymbol,
     showWinCombo,
     result,
-    clearBoard
+    clearBoard,
   };
 })();
 
 const Controller = ((Data, UI) => {
   const DOM = UI.getDOMSelectors();
 
-  const startGame = () => { };
+  const startGame = () => {};
 
   const init = () => {
     document
