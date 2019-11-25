@@ -156,7 +156,47 @@ const UIModule = (() => {
 const Controller = ((Data, UI) => {
   const DOM = UI.getDOMSelectors();
 
-  const startGame = () => { };
+  const startGame = () => {
+    resetGame();
+    const name1 = document.querySelector(DOM.player1Name).value;
+    const name2 = document.querySelector(DOM.player2Name).value;
+
+    const player1 = Data.Player(name1, 'X');
+    const player2 = Data.Player(name2, "O");
+
+    const game = Data.Game(Data.board(), player1, player2);
+    const boardNode = document.querySelector(DOM.board);
+
+    const runGame = (event) => {
+      const clickedCell = event.target.id;
+
+      if (clickedCell === undefined) return;
+      
+      const mark = game.turn(clickedCell);
+
+      if (mark !== undefined) {
+        UI.markPosition(mark);
+
+        if (game.isGameOver()) {
+          const winner = game.getWinner();
+          if (winner) {
+            UI.showWinCombo(game.getWinCombo());
+          }
+          UI.result(winner);
+          boardNode.removeEventListener('click', runGame);
+        }
+
+        game.switchPlayer();
+      }
+
+    }
+
+    boardNode.addEventListener('click', runGame);
+   };
+
+  const resetGame = () => {
+    UI.clearBoard();
+  }
 
   const init = () => {
     document
