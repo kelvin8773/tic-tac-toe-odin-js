@@ -156,7 +156,7 @@ const UIModule = (() => {
 const Controller = ((Data, UI) => {
   const DOM = UI.getDOMSelectors();
 
-  const startGame = () => {};
+  const startGame = () => { };
 
   const init = () => {
     document
