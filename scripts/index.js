@@ -57,19 +57,28 @@ const DataModule = (() => {
 
     const Game = (board, ...players) => {
         const switchPlayer = () => players.reverse();
-        const activePlayer = () => players[0];
+        const getActivePlayer = () => players[0];
 
         const isGameOver = () => {
-            // if (board.isWon(activePlayer())) {
-            return board.isWon(activePlayer().getSymbol()) || board.isFull();
-            // } else if (!board.isWon(activePlayer()) && board.isFull()) {
-            //     console.log("it is a draw");
-            // }
+            return board.isWon(getActivePlayer().getSymbol()) || board.isFull();
         };
 
         const getWinner = () => {
-            return board.isWon(game.activePlayer().getSymbol()) && players[0];
+            return board.isWon(getActivePlayer().getSymbol()) && players[0];
         }
+
+        const getWinCombo = () => board.getWinCombo(getActivePlayer().getSymbol());
+
+        const turn = (pos) => {
+          if (!board.isEmptyCell(pos)) return;
+          const symbol = getActivePlayer().getSymbol();
+
+          board.mark(pos, symbol);
+
+          return {pos, symbol};
+        }
+ 
+        return { switchPlayer, getActivePlayer, isGameOver, getWinner, turn, getWinCombo }
     };
 
     return { Player, Board, Game }
