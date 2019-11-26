@@ -131,9 +131,9 @@ const UIModule = (() => {
   const clearBoard = () => {
     const cells = document.querySelectorAll(DOMSelectors.allcells);
 
-    cells.forEach((c) => {
-      c.innerText = '';
-      c.style.background = 'white';
+    cells.forEach((cell) => {
+      cell.innerText = '';
+      cell.style.background = 'white';
     });
   };
 
