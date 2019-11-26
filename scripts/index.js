@@ -34,11 +34,7 @@ const DataModule = (() => {
 
     const getWinCombo = (symbol) => {
       const positions = positionsBySymbol(symbol);
-      for (const combo of winCombs) {
-        if (combo.every((c) => positions.includes(c))) {
-          return combo;
-        }
-      }
+      return winCombs.find((value) => value.every((c) => positions.includes(c)));
     };
 
     const isWon = (symbol) => {
@@ -77,7 +73,7 @@ const DataModule = (() => {
       if (!board.isEmptyCell(cellID)) return;
       const symbol = getActivePlayer().getSymbol();
       board.mark(cellID, symbol);
-      return { pos, symbol };
+      return {pos, symbol};
     };
 
     return {
