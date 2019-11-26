@@ -32,25 +32,27 @@
                 </tr>
             </table>
             <div class="m-5">
-                <h4 class="text-center" id="message-line">
-                    Please Giving Players Name to Start ...
+                <h4 id="message-line" class="text-center my-3">
+                    Please Given Your Names below ... <br>
+                    Or Just hit 'Start' to Play the Game.
                 </h4>
-                <div id='player-form' class='my-3'>
-                    <div class="form-group">
-                        <label>Player1: </label>
-                        <input type="text" name="player1" placeholder="Input Name here">
 
-                        <label>Player2: </label>
-                        <input type="text" name="player2" placeholder="Input Name here">
+                <div id='player-form' class='d-lg-flex flex-column justify-content-between'>
+                    <div class="row my-3">
+                        <div class="col-md-6">
+                            <input type="text" name="player1" value="player1" class="form-control" placeholder="Player1 Name Here ...">
+                        </div>
+                        <div class="col-md-6">
+                            <input type="text" name="player2" value="player2" class="form-control" placeholder="Player2 Name Here ...">
+                        </div>
                     </div>
 
-                    <div class='form-group'>
-                        <button id='startbtn' class="btn btn-primary btn-lg mx-3">
-                            Start
-                        </button>
-                    </div>
+                    <button id='startbtn' class="btn btn-primary btn-lg mx-auto">
+                        Start
+                    </button>
                 </div>
-                <div class="result"></div>
+
+               
             </div>
         </div>
 
