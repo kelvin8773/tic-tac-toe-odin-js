@@ -22,7 +22,7 @@ const DataModule = (() => {
       grid[pos] = symbol;
     };
 
-    const positionsBySymbol = (symbol) => {
+    const positionsBySymbol = symbol => {
       const positions = [];
       grid.forEach((value, pos) => {
         if (value === symbol) {
@@ -32,21 +32,21 @@ const DataModule = (() => {
       return positions;
     };
 
-    const getWinCombo = (symbol) => {
+    const getWinCombo = symbol => {
       const positions = positionsBySymbol(symbol);
-      return winCombs.find((value) => value.every((c) => positions.includes(c)));
+      return winCombs.find(value => value.every(c => positions.includes(c)));
     };
 
-    const isWon = (symbol) => {
+    const isWon = symbol => {
       if (getWinCombo(symbol)) {
         return true;
       }
       return false;
     };
 
-    const isFull = () => !grid.some((pos) => pos === null);
+    const isFull = () => !grid.some(pos => pos === null);
 
-    const isEmptyCell = (pos) => !grid[pos];
+    const isEmptyCell = pos => !grid[pos];
 
     return {
       mark,
@@ -62,18 +62,20 @@ const DataModule = (() => {
     const getActivePlayer = () => players[0];
     const getNextPlayer = () => players[1];
 
-    const isGameOver = () => board.isWon(getActivePlayer().getSymbol()) || board.isFull();
+    const isGameOver = () =>
+      board.isWon(getActivePlayer().getSymbol()) || board.isFull();
 
-    const getWinner = () => board.isWon(getActivePlayer().getSymbol()) && players[0];
+    const getWinner = () =>
+      board.isWon(getActivePlayer().getSymbol()) && players[0];
 
     const getWinCombo = () => board.getWinCombo(getActivePlayer().getSymbol());
 
-    const turn = (pos) => {
+    const turn = pos => {
       const cellID = pos.charAt(pos.length - 1);
       if (!board.isEmptyCell(cellID)) return;
       const symbol = getActivePlayer().getSymbol();
       board.mark(cellID, symbol);
-      return {pos, symbol};
+      return { pos, symbol };
     };
 
     return {
@@ -103,14 +105,13 @@ const UIModule = (() => {
   };
   const startBtn = document.querySelector(DOMSelectors.startbutton);
 
-
   const getDOMSelectors = () => DOMSelectors;
   const markPosition = ({ pos, symbol }) => {
     const cell = document.querySelector(`#${pos}`);
     cell.innerText = symbol;
   };
 
-  const showMessage = (message) => {
+  const showMessage = message => {
     const messageNode = document.querySelector(DOMSelectors.message);
     messageNode.innerText = message;
   };
@@ -131,8 +132,8 @@ const UIModule = (() => {
     }
   };
 
-  const showWinCombo = (combo) => {
-    combo.forEach((pos) => {
+  const showWinCombo = combo => {
+    combo.forEach(pos => {
       const el = document.querySelector(`#cell${pos}`);
       el.style.background = 'green';
     });
@@ -141,9 +142,9 @@ const UIModule = (() => {
   const clearBoard = () => {
     const cells = document.querySelectorAll(DOMSelectors.allcells);
 
-    cells.forEach((cell) => {
-      cell.innerText = '';
-      cell.style.background = 'white';
+    cells.forEach(c => {
+      c.innerText = '';
+      c.style.background = 'white';
     });
   };
 
@@ -178,7 +179,7 @@ const Controller = ((Data, UI) => {
     const boardNode = document.querySelector(DOM.board);
     UI.showMessage('Game Started, Player1 First!');
 
-    const runGame = (event) => {
+    const runGame = event => {
       UI.showMessage(`${game.getNextPlayer().getName()}, It is your Turn.`);
       UI.updateStartButton('start');
       const clickedCell = event.target.id;
