@@ -111,13 +111,18 @@ const UIModule = (() => {
   };
 
   const result = (player = null) => {
-    const resultNode = document.querySelector(DOMSelectors.result);
+    const resultNode = document.querySelector(DOMSelectors.message);
+
     if (player) {
-      resultNode.innerHTML = `
-            <p style="color: ${player.getSymbol() === 'X' ? 'blue' : 'yellow'}>
+      resultNode.innerText = `
               ${player.getName()} has won!
-              </p>
             `;
+    }
+    else{
+      resultNode.innerText =`
+        Board is full.
+        Try Again
+      `
     }
   };
 
@@ -155,19 +160,21 @@ const Controller = ((Data, UI) => {
   };
 
   const startGame = () => {
-    resetGame();
+     resetGame();
     const name1 = document.querySelector(DOM.player1Name).value;
     const name2 = document.querySelector(DOM.player2Name).value;
-
+    
+    
     const player1 = Data.Player(name1, 'X');
     const player2 = Data.Player(name2, 'O');
 
     const game = Data.Game(Data.Board(), player1, player2);
     const boardNode = document.querySelector(DOM.board);
+    const startbut=document.querySelector(DOM.startbutton);
 
     const runGame = (event) => {
       const clickedCell = event.target.id;
-
+      
       if (clickedCell === undefined) return;
 
       const mark = game.turn(clickedCell);
@@ -180,7 +187,10 @@ const Controller = ((Data, UI) => {
           if (winner) {
             UI.showWinCombo(game.getWinCombo());
           }
+          console.log("gameOver")
           UI.result(winner);
+        
+          startbut.innerText=`Restart`
           boardNode.removeEventListener('click', runGame);
         }
 
