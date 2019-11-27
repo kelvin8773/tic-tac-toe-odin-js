@@ -1,6 +1,6 @@
 # Tic Tac Toe Project (Web)
 
-[Project Demo]()
+[Project Demo](https://abdusaid10.github.io/tic-tac-toe-odin-js/)
 
 ## Note
 
