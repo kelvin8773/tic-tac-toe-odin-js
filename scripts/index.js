@@ -1,155 +1,222 @@
 const DataModule = (() => {
+  const Player = (name, symbol) => {
+    const getName = () => name;
+    const getSymbol = () => symbol;
+    return { getName, getSymbol };
+  };
 
-    const Player = (name, symbol) => {
-        const getName = () => name;
-        const getSymbol = () => symbol;
-        return { getName, getSymbol }
+  const Board = () => {
+    const grid = new Array(9).fill(null);
+    const winCombs = [
+      [0, 1, 2],
+      [3, 4, 5],
+      [6, 7, 8],
+      [0, 4, 8],
+      [0, 3, 6],
+      [1, 4, 7],
+      [2, 5, 8],
+      [2, 4, 6],
+    ];
+
+    const mark = (pos, symbol) => {
+      grid[pos] = symbol;
     };
 
-    const Board = () => {
-        const grid = new Array(9).fill(null);
-        const winCombs = [
-            [0, 1, 2],
-            [3, 4, 5],
-            [6, 7, 8],
-            [0, 4, 8],
-            [0, 3, 6],
-            [1, 4, 7],
-            [2, 5, 8],
-            [2, 4, 6]
-        ];
-
-        const mark = (pos, symbol) => {
-          grid[pos] = symbol;
+    const positionsBySymbol = symbol => {
+      const positions = [];
+      grid.forEach((value, pos) => {
+        if (value === symbol) {
+          positions.push(pos);
         }
-
-        const positionsBySymbol = (symbol) => {
-          const positions = [];
-          grid.forEach((value, pos) => {
-            if (value === symbol) {
-              positions.push(pos)
-            }
-          })
-        }
-
-        const isWon = (symbol) => {
-            if (getWinCombo(symbol)) {
-              return true
-            }
-            return false
-        };
-
-        const getWinCombo = (symbol) => {
-          const positions = positionsBySymbol(symbol);
-            for (let combo of winCombs) {
-              if (combo.every(c => positions.includes(c))) {
-                return combo;
-              }
-            }
-        }
-
-        const isFull = () => !grid.some(pos => pos == null);
-
-        const isEmptyCell = (pos) => !grid[pos]; 
-
-      return { mark, getWinCombo, isFull, isWon, isEmptyCell }
+      });
+      return positions;
     };
 
-    const Game = (board, ...players) => {
-        const switchPlayer = () => players.reverse();
-        const getActivePlayer = () => players[0];
-
-        const isGameOver = () => {
-            return board.isWon(getActivePlayer().getSymbol()) || board.isFull();
-        };
-
-        const getWinner = () => {
-            return board.isWon(getActivePlayer().getSymbol()) && players[0];
-        }
-
-        const getWinCombo = () => board.getWinCombo(getActivePlayer().getSymbol());
-
-        const turn = (pos) => {
-          if (!board.isEmptyCell(pos)) return;
-          const symbol = getActivePlayer().getSymbol();
-
-          board.mark(pos, symbol);
-
-          return {pos, symbol};
-        }
- 
-        return { switchPlayer, getActivePlayer, isGameOver, getWinner, turn, getWinCombo }
+    const getWinCombo = symbol => {
+      const positions = positionsBySymbol(symbol);
+      return winCombs.find(value => value.every(c => positions.includes(c)));
     };
 
-    return { Player, Board, Game }
+    const isWon = symbol => {
+      if (getWinCombo(symbol)) {
+        return true;
+      }
+      return false;
+    };
+
+    const isFull = () => !grid.some(pos => pos === null);
+
+    const isEmptyCell = pos => !grid[pos];
+
+    return {
+      mark,
+      getWinCombo,
+      isFull,
+      isWon,
+      isEmptyCell,
+    };
+  };
+
+  const Game = (board, ...players) => {
+    const switchPlayer = () => players.reverse();
+    const getActivePlayer = () => players[0];
+    const getNextPlayer = () => players[1];
+
+    const isGameOver = () =>
+      board.isWon(getActivePlayer().getSymbol()) || board.isFull();
+
+    const getWinner = () =>
+      board.isWon(getActivePlayer().getSymbol()) && players[0];
+
+    const getWinCombo = () => board.getWinCombo(getActivePlayer().getSymbol());
+
+    const turn = pos => {
+      const cellID = pos.charAt(pos.length - 1);
+      if (!board.isEmptyCell(cellID)) return;
+      const symbol = getActivePlayer().getSymbol();
+      board.mark(cellID, symbol);
+      return { pos, symbol };
+    };
+
+    return {
+      switchPlayer,
+      getActivePlayer,
+      getNextPlayer,
+      isGameOver,
+      getWinner,
+      turn,
+      getWinCombo,
+    };
+  };
+
+  return { Player, Board, Game };
 })();
-
 
 const UIModule = (() => {
-    const DOMSelectors = {
-        startbutton: '#startbtn',
-        restbutton: '#restbtn',
-        board: '#gameboard',
-        allcells: '.cell',
-        message: '#message-line',
-        player1Name: `[name=player1]`,
-        player2Name: `[name=player2]`,
-        cell(pos) { return `#"${pos}"` }
+  const DOMSelectors = {
+    startbutton: '#startbtn',
+    restbutton: '#restbtn',
+    board: '#gameboard',
+    allcells: '.cell',
+    message: '#message-line',
+    result: '.result',
+    player1Name: '[name=player1]',
+    player2Name: '[name=player2]',
+  };
+  const startBtn = document.querySelector(DOMSelectors.startbutton);
+
+  const getDOMSelectors = () => DOMSelectors;
+  const markPosition = ({ pos, symbol }) => {
+    const cell = document.querySelector(`#${pos}`);
+    cell.innerText = symbol;
+  };
+
+  const showMessage = message => {
+    const messageNode = document.querySelector(DOMSelectors.message);
+    messageNode.innerText = message;
+  };
+
+  const updateStartButton = (status = '') => {
+    switch (status) {
+      case 'start':
+        startBtn.innerText = 'Reset';
+        startBtn.className = 'btn btn-danger btn-lg mx-auto';
+        break;
+      case 'finish':
+        startBtn.innerText = 'Restart';
+        startBtn.className = 'btn btn-info btn-lg mx-auto';
+        break;
+      default:
+        startBtn.innerText = 'Start';
+        startBtn.className = 'btn btn-primary btn-lg mx-auto';
     }
+  };
 
-    const getDOMSelectors = () => DOMSelectors;
-    const markPosition = ({ position, symbol }) => {
-        const cell = document.querySelector(DOMSelectors.cell(position));
+  const showWinCombo = combo => {
+    combo.forEach(pos => {
+      const el = document.querySelector(`#cell${pos}`);
+      el.style.background = 'green';
+    });
+  };
 
-    }
-    return { DOMSelectors, }
+  const clearBoard = () => {
+    const cells = document.querySelectorAll(DOMSelectors.allcells);
 
+    cells.forEach(c => {
+      c.innerText = '';
+      c.style.background = 'white';
+    });
+  };
+
+  return {
+    DOMSelectors,
+    getDOMSelectors,
+    markPosition,
+    showWinCombo,
+    showMessage,
+    updateStartButton,
+    clearBoard,
+  };
 })();
 
-
 const Controller = ((Data, UI) => {
-    let DOM = UI.DOMSelectors;
+  const DOM = UI.getDOMSelectors();
 
-    let board = Data.Board;
-    let game = Data.Game;
+  const resetGame = () => {
+    UI.clearBoard();
+    UI.updateStartButton();
+  };
 
+  const startGame = () => {
+    resetGame();
+    const name1 = document.querySelector(DOM.player1Name).value;
+    const name2 = document.querySelector(DOM.player2Name).value;
 
-    const restGame = () => {
-        board.rest();
-        game.rest();
-        UI.clearBoard();
-    };
+    const player1 = Data.Player(name1, 'X');
+    const player2 = Data.Player(name2, 'O');
 
-    const runGame = (board, player1, player2) => {
+    const game = Data.Game(Data.Board(), player1, player2);
+    const boardNode = document.querySelector(DOM.board);
+    UI.showMessage('Game Started, Player1 First!');
 
-        if (board.isWon(player1)) {
+    const runGame = event => {
+      UI.showMessage(`${game.getNextPlayer().getName()}, It is your Turn.`);
+      UI.updateStartButton('start');
+      const clickedCell = event.target.id;
 
+      if (clickedCell === undefined) return;
+
+      const mark = game.turn(clickedCell);
+
+      if (mark !== undefined) {
+        UI.markPosition(mark);
+
+        if (game.isGameOver()) {
+          const winner = game.getWinner();
+          if (winner) {
+            UI.showWinCombo(game.getWinCombo());
+            UI.showMessage(`Congratulation! ${winner.getName()} won!`);
+          } else {
+            UI.showMessage('The Board is full, please try again!');
+          }
+          boardNode.removeEventListener('click', runGame);
+          UI.updateStartButton('finish');
         }
 
-    }
-
-    const startGame = () => {
-        const player1Name = document.querySelector(DOM.player1Name).value;
-        const player2Name = document.querySelector(DOM.player2Name).value;
-
-        const player1 = Data.Player(player1Name, 'X');
-        const player2 = Data.Player(player2Name, 'O');
-
-        const messageNode = document.createTextNode(`Player1 is ${player1Name}, Player2 is ${player2Name}`);
-        document.querySelector(DOM.message).replaceWith(messageNode);
-
-        restGame();
-        runGame(board, player1, player2);
-
+        game.switchPlayer();
+      }
     };
 
+    boardNode.addEventListener('click', runGame);
+  };
 
-    const init = () => {
-        document.querySelector(DOM.startbutton)
-            .addEventListener('click', startGame);
-    };
+  const init = () => {
+    document
+      .querySelector(DOM.startbutton)
+      .addEventListener('click', startGame);
+  };
 
-    return { init }
+  return { init };
 })(DataModule, UIModule);
 
 Controller.init();

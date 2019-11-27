@@ -16,50 +16,49 @@
             <h1 class="my-5 text-center">Tic Tac Toe Game</h1>
             <table id="gameboard" class="p-5">
                 <tr>
-                    <td class="cell" id="0"></td>
-                    <td class="cell" id="1"></td>
-                    <td class="cell" id="2"></td>
+                    <td class="cell" id="cell0"></td>
+                    <td class="cell" id="cell1"></td>
+                    <td class="cell" id="cell2"></td>
                 </tr>
                 <tr>
-                    <td class="cell" id="3"></td>
-                    <td class="cell" id="4"></td>
-                    <td class="cell" id="5"></td>
+                    <td class="cell" id="cell3"></td>
+                    <td class="cell" id="cell4"></td>
+                    <td class="cell" id="cell5"></td>
                 </tr>
                 <tr>
-                    <td class="cell" id="6"></td>
-                    <td class="cell" id="7"></td>
-                    <td class="cell" id="8"></td>
+                    <td class="cell" id="cell6"></td>
+                    <td class="cell" id="cell7"></td>
+                    <td class="cell" id="cell8"></td>
                 </tr>
             </table>
             <div class="m-5">
-                <h4 class="text-center" id="message-line">
-                    Please Giving Players Name to Start ...
+                <h4 id="message-line" class="text-center my-3">
+                    Please Given Your Names below ... <br>
+                    Or Just hit 'Start' to Play the Game.
                 </h4>
-                <form id='player-form' class='my-3'>
-                    <div class="form-group">
-                        <label>Player1: </label>
-                        <input type="text" name="player1" placeholder="Input Name here">
 
-                        <label>Player2: </label>
-                        <input type="text" name="player2" placeholder="Input Name here">
+                <div id='player-form' class='d-lg-flex flex-column justify-content-between'>
+                    <div class="row my-3">
+                        <div class="col-md-6">
+                            <input type="text" name="player1" value="player1" class="form-control" placeholder="Player1 Name Here ...">
+                        </div>
+                        <div class="col-md-6">
+                            <input type="text" name="player2" value="player2" class="form-control" placeholder="Player2 Name Here ...">
+                        </div>
                     </div>
 
-                    <div class='form-group'>
-                        <button id='startbtn' class="btn btn-primary btn-lg mx-3">
-                            Start
-                        </button>
+                    <button id='startbtn' class="btn btn-primary btn-lg mx-auto">
+                        Start
+                    </button>
+                </div>
 
-                        <button id='restbtn' class="btn btn-danger btn-lg mx-3">
-                            Reset
-                        </button>
-                    </div>
-                </form>
+               
             </div>
         </div>
 
     </div>
 
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <!-- <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script> -->
     <script src="./scripts/index.js"></script>
 </body>
 
