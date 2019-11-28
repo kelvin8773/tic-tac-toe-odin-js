@@ -1,8 +1,19 @@
 const DataModule = (() => {
   const Player = (name, symbol) => {
+    let score = 0;
     const getName = () => name;
     const getSymbol = () => symbol;
-    return { getName, getSymbol };
+    const getScore = () => score;
+    const addScore = () => {
+      score += 1;
+    };
+
+    return {
+      getName,
+      getSymbol,
+      getScore,
+      addScore,
+    };
   };
 
   const Board = () => {
@@ -94,16 +105,42 @@ const DataModule = (() => {
 
 const UIModule = (() => {
   const DOMSelectors = {
-    startbutton: '#startbtn',
-    restbutton: '#restbtn',
+    startButton: '#btn-start',
+    nextButton: '#btn-next',
     board: '#gameboard',
     allcells: '.cell',
     message: '#message-line',
-    result: '.result',
-    player1Name: '[name=player1]',
-    player2Name: '[name=player2]',
   };
-  const startBtn = document.querySelector(DOMSelectors.startbutton);
+  const startBtn = document.querySelector(DOMSelectors.startButton);
+
+  const player1Input = document.querySelector('#player1-input');
+  const player2Input = document.querySelector('#player2-input');
+  const player1Display = document.querySelector('#player1-display');
+  const player2Display = document.querySelector('#player2-display');
+  const player1Score = document.querySelector('#player1-score');
+  const player2Score = document.querySelector('#player2-score');
+
+  const getPlayersName = player => {
+    switch (player) {
+      case 'player2':
+        return player2Input.value;
+      default:
+        return player1Input.value;
+    }
+  };
+
+  const updatePlayersName = () => {
+    player1Display.innerText = player1Input.value;
+    player2Display.innerText = player2Input.value;
+  };
+
+  const updatePlayerScore = player => {
+    if (player.getSymbol() === 'X') {
+      player1Score.innerText = player.getScore();
+    } else {
+      player2Score.innerText = player.getScore();
+    }
+  };
 
   const getDOMSelectors = () => DOMSelectors;
   const markPosition = ({ pos, symbol }) => {
@@ -151,6 +188,9 @@ const UIModule = (() => {
   return {
     DOMSelectors,
     getDOMSelectors,
+    getPlayersName,
+    updatePlayersName,
+    updatePlayerScore,
     markPosition,
     showWinCombo,
     showMessage,
@@ -169,15 +209,18 @@ const Controller = ((Data, UI) => {
 
   const startGame = () => {
     resetGame();
-    const name1 = document.querySelector(DOM.player1Name).value;
-    const name2 = document.querySelector(DOM.player2Name).value;
 
-    const player1 = Data.Player(name1, 'X');
-    const player2 = Data.Player(name2, 'O');
-
+    const player1 = Data.Player(UI.getPlayersName('player1'), 'X');
+    const player2 = Data.Player(UI.getPlayersName('player2'), 'O');
     const game = Data.Game(Data.Board(), player1, player2);
     const boardNode = document.querySelector(DOM.board);
-    UI.showMessage('Game Started, Player1 First!');
+
+    UI.updatePlayersName();
+
+    UI.updatePlayerScore(player1);
+    UI.updatePlayerScore(player2);
+
+    UI.showMessage(`Game Started, ${UI.getPlayersName()}, You Go First!`);
 
     const runGame = event => {
       UI.showMessage(`${game.getNextPlayer().getName()}, It is your Turn.`);
@@ -195,6 +238,8 @@ const Controller = ((Data, UI) => {
           const winner = game.getWinner();
           if (winner) {
             UI.showWinCombo(game.getWinCombo());
+            winner.addScore();
+            UI.updatePlayerScore(winner);
             UI.showMessage(`Congratulation! ${winner.getName()} won!`);
           } else {
             UI.showMessage('The Board is full, please try again!');
@@ -202,7 +247,6 @@ const Controller = ((Data, UI) => {
           boardNode.removeEventListener('click', runGame);
           UI.updateStartButton('finish');
         }
-
         game.switchPlayer();
       }
     };
@@ -212,7 +256,7 @@ const Controller = ((Data, UI) => {
 
   const init = () => {
     document
-      .querySelector(DOM.startbutton)
+      .querySelector(DOM.startButton)
       .addEventListener('click', startGame);
   };
 

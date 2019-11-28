@@ -16,62 +16,68 @@
 
 <body>
     <h1 id='header' class="my-5 text-center">Tic Tac Toe</h1>
-    <div id='main' class="row mx-auto">
+    <div id='main' class="container row mx-auto">
         <div id='score' class="col-md-6 d-flex flex-column align-items-center">
             <h2 class="mb-3">Scores Board</h2>
 
             <h5 id="message-line" class="text-center my-3">
                 Welcome to "Tic Tac Toe Game"!
-
             </h5>
 
             <div id='player-form' class='d-flex flex-column justify-content-between align-items-center'>
-                <div class="row my-3">
+                <div id='players-input' class="row my-3">
                     <div class="col-md-6 form-group">
-                        <input type="text" name="player1" value="player1" class="form-control" placeholder="Player1 Name Here ...">
+                        <input type="text" id="player1-input" value="player1" class="form-control" placeholder="Player1 Name Here ...">
                         <small id="gamePlayer1Help" class="form-text text-muted ">Default Name "Player1".</small>
                     </div>
                     <div class="col-md-6 form-group">
-                        <input type="text" name="player2" value="player2" class="form-control" placeholder="Player2 Name Here ...">
+                        <input type="text" id="player2-input" value="player2" class="form-control" placeholder="Player2 Name Here ...">
                         <small id="gamePlayer2Help" class="form-text text-muted ">Default Name "Player2".</small>
                     </div>
                 </div>
 
-                <button id='startbtn' class="btn btn-primary btn-lg">
-                    Start
-                </button>
-                <small id="gameHelp" class="form-text text-muted text-center">Click "Start" to Play!</small>
+                <div id="button-group" class="row w-50">
+                    <div id='start' class='col-md-6 mx-auto'>
+                        <button id='btn-start' class="btn btn-primary btn-lg">
+                            Start
+                        </button>
+                    </div>
+                    <div id='next' class='col-md-6 mx-auto'>
+                        <button id='btn-next' class="btn btn-danger btn-lg ">
+                            Reset
+                        </button>
+                    </div>
+                </div>
+
+                 <small id="gameHelp" class="form-text text-muted text-center">Click "Start" to Play!</small>
 
             </div>
-
-            <div id="score-table" class='container my-4'>
-               <table class="table table-bordered shadow-sm rounded">
-                <thead>
-                    <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Players Name</th>
-                    <th scope="col">Score</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    
-                    <tr>
-                    <th scope="row">1</th>
-                    <td>Player1</td>
-                    <td>3</td>
-                    </tr>
-                    
-                    <tr>
-                    <th scope="row">2</th>
-                    <td>Player2</td>
-                    <td>0</td>
-                    </tr>
-                    
-                </tbody>
-                </table>
-            </div>
-
-            
+           
+            <table id="score-table" class="table table-bordered shadow-sm my-4">
+            <thead>
+                <tr>
+                <th scope="col">#</th>
+                <th scope="col">Players Name</th>
+                <th scope="col">Score</th>
+                </tr>
+            </thead>
+            <tbody>
+                
+                <tr>
+                <th scope='row'>1</th>
+                <td id='player1-display'>Player1</td>
+                <td id='player1-score'>0</td>
+                </tr>
+                
+                <tr>
+                <th scope="row">2</th>
+                <td id='player2-display'>Player2</td>
+                <td id='player2-score'>0</td>
+                </tr>
+                
+            </tbody>
+            </table>
+           
 
         </div>
 
