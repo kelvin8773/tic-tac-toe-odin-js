@@ -7,14 +7,77 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Tic Tac Toe</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    
+    <link href="https://fonts.googleapis.com/css?family=Fira+Sans+Extra+Condensed:300,300i,400,700,700i,800,800i,900,900i&display=swap" rel="stylesheet">
+    
     <link rel="stylesheet" href="style.css">
+
 </head>
 
 <body>
-    <div class="container">
-        <div class="d-flex flex-column align-items-center">
-            <h1 class="my-5 text-center">Tic Tac Toe Game</h1>
-            <table id="gameboard" class="p-5">
+    <h1 id='header' class="my-5 text-center">Tic Tac Toe</h1>
+    <div id='main' class="row mx-auto">
+        <div id='score' class="col-md-6 d-flex flex-column align-items-center">
+            <h2 class="mb-3">Scores Board</h2>
+
+            <h5 id="message-line" class="text-center my-3">
+                Welcome to "Tic Tac Toe Game"!
+
+            </h5>
+
+            <div id='player-form' class='d-flex flex-column justify-content-between align-items-center'>
+                <div class="row my-3">
+                    <div class="col-md-6 form-group">
+                        <input type="text" name="player1" value="player1" class="form-control" placeholder="Player1 Name Here ...">
+                        <small id="gamePlayer1Help" class="form-text text-muted ">Default Name "Player1".</small>
+                    </div>
+                    <div class="col-md-6 form-group">
+                        <input type="text" name="player2" value="player2" class="form-control" placeholder="Player2 Name Here ...">
+                        <small id="gamePlayer2Help" class="form-text text-muted ">Default Name "Player2".</small>
+                    </div>
+                </div>
+
+                <button id='startbtn' class="btn btn-primary btn-lg">
+                    Start
+                </button>
+                <small id="gameHelp" class="form-text text-muted text-center">Click "Start" to Play!</small>
+
+            </div>
+
+            <div id="score-table" class='container my-4'>
+               <table class="table table-bordered shadow-sm rounded">
+                <thead>
+                    <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Players Name</th>
+                    <th scope="col">Score</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                    <tr>
+                    <th scope="row">1</th>
+                    <td>Player1</td>
+                    <td>3</td>
+                    </tr>
+                    
+                    <tr>
+                    <th scope="row">2</th>
+                    <td>Player2</td>
+                    <td>0</td>
+                    </tr>
+                    
+                </tbody>
+                </table>
+            </div>
+
+            
+
+        </div>
+
+        <div id='game' class="col-md-6 d-flex flex-column align-items-center">
+            <h3 class="mb-5">Game Board</h3>
+            <table id="gameboard" class="p-5 shadow">
                 <tr>
                     <td class="cell" id="cell0"></td>
                     <td class="cell" id="cell1"></td>
@@ -32,33 +95,14 @@
                 </tr>
             </table>
             <div class="m-5">
-                <h4 id="message-line" class="text-center my-3">
-                    Please Given Your Names below ... <br>
-                    Or Just hit 'Start' to Play the Game.
-                </h4>
-
-                <div id='player-form' class='d-lg-flex flex-column justify-content-between'>
-                    <div class="row my-3">
-                        <div class="col-md-6">
-                            <input type="text" name="player1" value="player1" class="form-control" placeholder="Player1 Name Here ...">
-                        </div>
-                        <div class="col-md-6">
-                            <input type="text" name="player2" value="player2" class="form-control" placeholder="Player2 Name Here ...">
-                        </div>
-                    </div>
-
-                    <button id='startbtn' class="btn btn-primary btn-lg mx-auto">
-                        Start
-                    </button>
-                </div>
-
-               
-            </div>
+                               
         </div>
-
     </div>
+    
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.0/js/bootstrap.min.js" integrity="sha384-3qaqj0lc6sV/qpzrc1N5DC6i1VRn/HyX4qdPaiEFbn54VjQBEU341pvjz7Dv3n6P" crossorigin="anonymous"></script>
 
-    <!-- <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script> -->
     <script src="./scripts/index.js"></script>
 </body>
 

@@ -135,7 +135,7 @@ const UIModule = (() => {
   const showWinCombo = combo => {
     combo.forEach(pos => {
       const el = document.querySelector(`#cell${pos}`);
-      el.style.background = 'green';
+      el.style.background = 'lightseagreen';
     });
   };
 
