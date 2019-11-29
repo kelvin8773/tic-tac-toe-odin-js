@@ -1,8 +1,21 @@
 const DataModule = (() => {
   const Player = (name, symbol) => {
-    const getName = () => name;
-    const getSymbol = () => symbol;
-    return { getName, getSymbol };
+    const selfName = name;
+    const selfSymbol = symbol;
+    let score = 0;
+    const getName = () => selfName;
+    const getSymbol = () => selfSymbol;
+    const getScore = () => score;
+    const addScore = () => {
+      score += 1;
+    };
+
+    return {
+      getName,
+      getSymbol,
+      getScore,
+      addScore,
+    };
   };
 
   const Board = () => {
@@ -94,16 +107,44 @@ const DataModule = (() => {
 
 const UIModule = (() => {
   const DOMSelectors = {
-    startbutton: '#startbtn',
-    restbutton: '#restbtn',
+    startButton: '#btn-start',
+    nextButton: '#btn-next',
     board: '#gameboard',
     allcells: '.cell',
     message: '#message-line',
-    result: '.result',
-    player1Name: '[name=player1]',
-    player2Name: '[name=player2]',
   };
-  const startBtn = document.querySelector(DOMSelectors.startbutton);
+  const startBtn = document.querySelector(DOMSelectors.startButton);
+
+  const player1Input = document.querySelector('#player1-input');
+  const player2Input = document.querySelector('#player2-input');
+  const player1Display = document.querySelector('#player1-display');
+  const player2Display = document.querySelector('#player2-display');
+  const player1Score = document.querySelector('#player1-score');
+  const player2Score = document.querySelector('#player2-score');
+
+  const getPlayersName = player => {
+    switch (player) {
+      case 'player1':
+        return player1Input.value;
+      case 'player2':
+        return player2Input.value;
+      default:
+        return 'Anonymous';
+    }
+  };
+
+  const updatePlayersName = () => {
+    player1Display.innerText = player1Input.value;
+    player2Display.innerText = player2Input.value;
+  };
+
+  const updatePlayerScore = player => {
+    if (player.getSymbol() === 'X') {
+      player1Score.innerText = player.getScore();
+    } else {
+      player2Score.innerText = player.getScore();
+    }
+  };
 
   const getDOMSelectors = () => DOMSelectors;
   const markPosition = ({ pos, symbol }) => {
@@ -120,22 +161,22 @@ const UIModule = (() => {
     switch (status) {
       case 'start':
         startBtn.innerText = 'Reset';
-        startBtn.className = 'btn btn-danger btn-lg mx-auto';
+        startBtn.className = 'btn btn-danger btn-lg';
         break;
       case 'finish':
-        startBtn.innerText = 'Restart';
-        startBtn.className = 'btn btn-info btn-lg mx-auto';
+        startBtn.innerText = 'Play Again!';
+        startBtn.className = 'btn btn-info btn-block';
         break;
       default:
         startBtn.innerText = 'Start';
-        startBtn.className = 'btn btn-primary btn-lg mx-auto';
+        startBtn.className = 'btn btn-primary btn-lg';
     }
   };
 
   const showWinCombo = combo => {
     combo.forEach(pos => {
       const el = document.querySelector(`#cell${pos}`);
-      el.style.background = 'green';
+      el.style.background = 'lightseagreen';
     });
   };
 
@@ -151,6 +192,9 @@ const UIModule = (() => {
   return {
     DOMSelectors,
     getDOMSelectors,
+    getPlayersName,
+    updatePlayersName,
+    updatePlayerScore,
     markPosition,
     showWinCombo,
     showMessage,
@@ -161,59 +205,81 @@ const UIModule = (() => {
 
 const Controller = ((Data, UI) => {
   const DOM = UI.getDOMSelectors();
+  let player1 = Data.Player(UI.getPlayersName('player1'), 'X');
+  let player2 = Data.Player(UI.getPlayersName('player2'), 'O');
+  let game = Data.Game(Data.Board(), player1, player2);
+  console.log(UI.getPlayersName('player1'));
+
+  const boardNode = document.querySelector(DOM.board);
+
+  const runGame = event => {
+    UI.showMessage(`${game.getNextPlayer().getName()}, It is your Turn.`);
+    UI.updateStartButton('start');
+    const clickedCell = event.target.id;
+
+    if (clickedCell === undefined) return;
+
+    const mark = game.turn(clickedCell);
+
+    if (mark !== undefined) {
+      UI.markPosition(mark);
+
+      if (game.isGameOver()) {
+        const winner = game.getWinner();
+        if (winner) {
+          UI.showWinCombo(game.getWinCombo());
+          winner.addScore();
+          UI.updatePlayerScore(winner);
+          UI.showMessage(`Congratulation! ${winner.getName()} won!`);
+        } else {
+          UI.showMessage('The Board is full, please try again!');
+        }
+        boardNode.removeEventListener('click', runGame);
+        UI.updateStartButton('finish');
+      }
+      game.switchPlayer();
+    }
+  };
 
   const resetGame = () => {
+    player1 = Data.Player(UI.getPlayersName('player1'), 'X');
+    player2 = Data.Player(UI.getPlayersName('player2'), 'O');
+
+    game = Data.Game(Data.Board(), player1, player2);
+
     UI.clearBoard();
     UI.updateStartButton();
+    UI.updatePlayersName();
+
+    UI.updatePlayerScore(player1);
+    UI.updatePlayerScore(player2);
+
+    UI.showMessage(`Game Started, ${UI.getPlayersName()}, You Go First!`);
+
+    boardNode.addEventListener('click', runGame);
   };
 
   const startGame = () => {
-    resetGame();
-    const name1 = document.querySelector(DOM.player1Name).value;
-    const name2 = document.querySelector(DOM.player2Name).value;
+    game = Data.Game(Data.Board(), player1, player2);
 
-    const player1 = Data.Player(name1, 'X');
-    const player2 = Data.Player(name2, 'O');
+    UI.clearBoard();
+    UI.updateStartButton();
 
-    const game = Data.Game(Data.Board(), player1, player2);
-    const boardNode = document.querySelector(DOM.board);
-    UI.showMessage('Game Started, Player1 First!');
+    UI.updatePlayersName();
 
-    const runGame = event => {
-      UI.showMessage(`${game.getNextPlayer().getName()}, It is your Turn.`);
-      UI.updateStartButton('start');
-      const clickedCell = event.target.id;
+    UI.updatePlayerScore(player1);
+    UI.updatePlayerScore(player2);
 
-      if (clickedCell === undefined) return;
-
-      const mark = game.turn(clickedCell);
-
-      if (mark !== undefined) {
-        UI.markPosition(mark);
-
-        if (game.isGameOver()) {
-          const winner = game.getWinner();
-          if (winner) {
-            UI.showWinCombo(game.getWinCombo());
-            UI.showMessage(`Congratulation! ${winner.getName()} won!`);
-          } else {
-            UI.showMessage('The Board is full, please try again!');
-          }
-          boardNode.removeEventListener('click', runGame);
-          UI.updateStartButton('finish');
-        }
-
-        game.switchPlayer();
-      }
-    };
+    UI.showMessage('Game Started!');
 
     boardNode.addEventListener('click', runGame);
   };
 
   const init = () => {
     document
-      .querySelector(DOM.startbutton)
+      .querySelector(DOM.startButton)
       .addEventListener('click', startGame);
+    document.querySelector(DOM.nextButton).addEventListener('click', resetGame);
   };
 
   return { init };
