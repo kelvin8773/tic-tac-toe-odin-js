@@ -2,7 +2,7 @@ body {
     font-family: 'Fira Sans Extra Condensed', sans-serif;
 }
 
-#gameboard td {
+#gameBoard td {
     border: 2px solid;
     height: 125px;
     width: 125px;
@@ -12,5 +12,3 @@ body {
     cursor: pointer;
     color: lightslategray;
 }
-
-

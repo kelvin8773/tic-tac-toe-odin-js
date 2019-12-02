@@ -6,10 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Tic Tac Toe</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    
-    <link href="https://fonts.googleapis.com/css?family=Fira+Sans+Extra+Condensed:300,300i,400,700,700i,800,800i,900,900i&display=swap" rel="stylesheet">
-    
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <link
+        href="https://fonts.googleapis.com/css?family=Fira+Sans+Extra+Condensed:300,300i,400,700,700i,800,800i,900,900i&display=swap"
+        rel="stylesheet">
+
     <link rel="stylesheet" href="style.css">
 
 </head>
@@ -24,66 +27,58 @@
                 Welcome, Pleas Give Your Names to Start!
             </h5>
 
-            <div id='player-form' class='d-flex flex-column justify-content-between align-items-center'>
-                <div id='players-input' class="row my-3">
-                    <div class="col-md-6 form-group">
-                        <input type="text" id="player1-input" value="player1" class="form-control" placeholder="Player1 Name Here ...">
-                        <small id="gamePlayer1Help" class="form-text text-muted ">Default "Player1" use "X".</small>
-                    </div>
-                    <div class="col-md-6 form-group">
-                        <input type="text" id="player2-input" value="player2" class="form-control" placeholder="Player2 Name Here ...">
-                        <small id="gamePlayer2Help" class="form-text text-muted ">Default "Player2" use "O".</small>
-                    </div>
-                </div>
-                 
-                <div id="button-group" class="row w-100">
-                    <div id='start' class='col-md-6'>
-                        <button id='btn-start' class="btn btn-primary btn-lg">
-                            Start
-                        </button>
-                    </div>
-                    <div id='next' class='col-md-6'>
-                        <button id='btn-next' class="btn btn-danger btn-lg ">
-                            Reset
-                        </button>
-                    </div>
-                </div>
-
-                 <small id="gameHelp" class="form-text text-muted text-center">Click "Start" to Play!</small>
-
-            </div>
-           
             <table id="score-table" class="table table-bordered shadow-sm my-4">
-            <thead>
-                <tr>
-                <th scope="col">#</th>
-                <th scope="col">Players Name</th>
-                <th scope="col">Score</th>
-                </tr>
-            </thead>
-            <tbody>
-                
-                <tr>
-                <th scope='row'>1</th>
-                <td id='player1-display'>Player1</td>
-                <td id='player1-score'>0</td>
-                </tr>
-                
-                <tr>
-                <th scope="row">2</th>
-                <td id='player2-display'>Player2</td>
-                <td id='player2-score'>0</td>
-                </tr>
-                
-            </tbody>
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Players Name</th>
+                        <th scope="col">Score</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    <tr>
+                        <th scope='row'>1</th>
+                        <td id='player1-display'>
+                            <input type="text" id="player1-input" value="Player1" class="form-control w-75"
+                                placeholder="Player1 Name Here ...">
+                        </td>
+                        <td id='player1-score'>0</td>
+                    </tr>
+
+                    <tr>
+                        <th scope="row">2</th>
+                        <td id='player2-display'>
+                            <input type="text" id="player2-input" value="Player2" class="form-control w-75"
+                                placeholder="Player2 Name Here ...">
+                        </td>
+                        <td id='player2-score'>0</td>
+                    </tr>
+
+                </tbody>
             </table>
-           
+
+            <div id="button-group" class="row w-75 text-center mb-3 ">
+                <div id='start' class='col-md-6'>
+                    <button id='btn-start' class="btn btn-primary btn-lg btn-block">
+                        Start
+                    </button>
+                </div>
+                <div id='next' class='col-md-6'>
+                    <button id='btn-reset' class="btn btn-danger btn-lg btn-block">
+                        Reset
+                    </button>
+                </div>
+            </div>
+            <small id="gameHelper" class="form-text text-muted text-center">Click "Start" to Play!</small>
+
+
 
         </div>
 
         <div id='game' class="col-md-6 d-flex flex-column align-items-center">
             <h3 class="mb-5">Game Board</h3>
-            <table id="gameboard" class="p-5 shadow">
+            <table id="gameBoard" class="p-5 shadow">
                 <tr>
                     <td class="cell" id="cell0"></td>
                     <td class="cell" id="cell1"></td>
@@ -101,15 +96,21 @@
                 </tr>
             </table>
             <div class="m-5">
-                               
-        </div>
-    </div>
-    
-    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.0/js/bootstrap.min.js" integrity="sha384-3qaqj0lc6sV/qpzrc1N5DC6i1VRn/HyX4qdPaiEFbn54VjQBEU341pvjz7Dv3n6P" crossorigin="anonymous"></script>
 
-    <script src="./scripts/index.js"></script>
+            </div>
+        </div>
+
+        <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+            integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+            crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+            integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+            crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.0/js/bootstrap.min.js"
+            integrity="sha384-3qaqj0lc6sV/qpzrc1N5DC6i1VRn/HyX4qdPaiEFbn54VjQBEU341pvjz7Dv3n6P"
+            crossorigin="anonymous"></script>
+
+        <script src="./scripts/index.js"></script>
 </body>
 
 </html>
