@@ -64,12 +64,19 @@ const DataModule = (() => {
 
     const isEmptyCell = pos => !grid[pos];
 
+    const getEmptyCell = () => {
+      let allEmptyCells = [];
+      grid.forEach((value, index) => { if (value === null) allEmptyCells.push(index) })
+      return allEmptyCells;
+    }
+
     return {
       mark,
       getWinCombo,
       isFull,
       isWon,
       isEmptyCell,
+      getEmptyCell,
     };
   };
 
@@ -87,12 +94,16 @@ const DataModule = (() => {
     const getWinCombo = () => board.getWinCombo(getActivePlayer().getSymbol());
 
     const turn = pos => {
-      const cellID = pos.charAt(pos.length - 1);
-      if (!board.isEmptyCell(cellID)) return;
+      if (!board.isEmptyCell(pos)) return;
       const symbol = getActivePlayer().getSymbol();
-      board.mark(cellID, symbol);
+      board.mark(pos, symbol);
       return { pos, symbol };
     };
+
+    const getEmptyCell = () => {
+      let allEmptyCells = board.getEmptyCell();
+      return allEmptyCells[0];
+    }
 
     return {
       switchPlayer,
@@ -102,6 +113,7 @@ const DataModule = (() => {
       getWinner,
       turn,
       getWinCombo,
+      getEmptyCell,
     };
   };
 
@@ -137,9 +149,13 @@ const UIModule = (() => {
     }
   };
 
-  const updatePlayersName = () => {
-    player1Display.innerText = player1Input.value;
-    player2Display.innerText = player2Input.value;
+  const updatePlayersName = (player) => {
+    if (player.getSymbol() === 'X') {
+      player1Display.innerText = player.getName();
+    }
+    if (player.getSymbol() === 'O') {
+      player2Display.innerText = player.getName();
+    }
   };
 
   const updatePlayerScore = player => {
@@ -152,7 +168,7 @@ const UIModule = (() => {
 
   const getDOMSelectors = () => DOMSelectors;
   const markPosition = ({ pos, symbol }) => {
-    const cell = document.querySelector(`#${pos}`);
+    const cell = document.querySelector(`#cell${pos}`);
     cell.innerText = symbol;
   };
 
@@ -213,6 +229,7 @@ const Controller = ((Data, UI) => {
   const player1 = Data.Player(UI.getPlayersName('player1'), 'X');
   const player2 = Data.Player(UI.getPlayersName('player2'), 'O');
   let gameSwitch = false;
+  let AI = false;
 
   const resetGame = () => {
     window.location.reload(true);
@@ -223,7 +240,10 @@ const Controller = ((Data, UI) => {
     const name2 = UI.getPlayersName('player2');
 
     if (name1 !== 'Player1') { player1.setName(name1) };
-    if (name2 !== 'Player2') { player2.setName(name2) };
+    if (name2 !== 'Player2') {
+      if (name2 == 'AI') { AI = true }
+      player2.setName(name2)
+    };
 
     UI.clearBoard();
 
@@ -240,19 +260,24 @@ const Controller = ((Data, UI) => {
     };
 
     UI.updateStartButton('start')
-    UI.updatePlayersName();
+    UI.updatePlayersName(player1);
+    UI.updatePlayersName(player2);
 
     const runGame = event => {
       const clickedCell = event.target.id;
-      const clickedCellValue = event.target.innerText;
-      if (clickedCell === undefined || clickedCellValue != '') return;
+      if (clickedCell === undefined) return;
 
-      UI.showMessage(` ~ ${game.getNextPlayer().getName()} ~, you are Next!!!`);
+      let pos = clickedCell.charAt(clickedCell.length - 1);
 
-      const mark = game.turn(clickedCell);
+      if (AI && game.getActivePlayer().getName() === 'AI') {
+        pos = game.getEmptyCell();
+      }
+
+      const mark = game.turn(pos);
 
       if (mark !== undefined) {
         UI.markPosition(mark);
+        UI.showMessage(` ~ ${game.getNextPlayer().getName()} ~, you are Next!!!`);
 
         if (game.isGameOver()) {
           const winner = game.getWinner();
@@ -269,10 +294,12 @@ const Controller = ((Data, UI) => {
         }
         game.switchPlayer();
       }
+
     };
 
     boardNode.addEventListener('click', runGame);
   };
+
 
   const init = () => {
     document
