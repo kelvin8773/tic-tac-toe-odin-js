@@ -102,6 +102,7 @@ const DataModule = (() => {
 
     const getEmptyCell = () => {
       let allEmptyCells = board.getEmptyCell();
+      console.log(allEmptyCells);
       return allEmptyCells[0];
     }
 
